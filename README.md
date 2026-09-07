@@ -1,9 +1,7 @@
 # Metro Pulse
 
 Demand forecasting and operational anomaly detection for the Mexico City Metro,
-built on the city's open ridership data: **1,180,920 station-days, 195 stations,
-2010–2026**.
-
+built on the city's open ridership data: 
 Two things come out of one model of expected demand:
 
 1. **A 14-day demand forecast per station** — for allocating trains, staffing
@@ -31,8 +29,6 @@ horizons**, cutting mean absolute error by **32%**.
 The baseline is not a straw man. Metro demand is overwhelmingly weekly, so "the
 same weekday last week" is a real forecast — which is exactly why it is the
 denominator here rather than a naive mean.
-
-### Anomaly detection — 163 monthly refits, 2013–2026
 
 The labels are real. The service mask derived from the data records every day
 each station was out of service across sixteen years, so recall is measured
@@ -97,9 +93,6 @@ closure from an incident (4 days) sits in the natural gap in the run-length
 distribution: 182 zero runs last exactly one day and 97 last two or three, but
 only 14 last four to six.
 
-Of the 62,025 zeros in the source, 61,600 fall into the categories above. The
-remaining **425 are genuine anomalies** — days a station was open and carried
-nobody — and those are exactly the detector's positive labels.
 
 **The earthquake was not a closure.** For eight days in September 2017 *every*
 station in the network reports zero. The Metro did not carry zero passengers; it
@@ -168,13 +161,6 @@ threshold that separates a closure from an incident is not a guess either: the
 run-length distribution has a gap there, with 182 runs of exactly one day, 97 of
 two or three, and only 14 of four to six.
 
-**Flagging the ambiguous rows instead of guessing them.** Two ways of resolving
-December 2020 were tried and both failed: magnitude, and the order of rows in
-the file. The order fails its own check — in November the mean by position
-(6,116 / 6,819) does not match the mean by station (7,310 / 5,625), so the two
-stations are not even written in a consistent order within a month. Sixty-two
-rows are 0.005% of the panel; inventing values for them is not worth
-contaminating the rest.
 
 **A strong baseline, on purpose.** Metro demand is dominated by the day of the
 week, so "the same weekday last week" is a genuinely good forecast. Picking a
@@ -193,53 +179,16 @@ error: training on squared loss and reporting absolute error optimises one thing
 and reports another, and in data this full of outliers the squared loss chases
 them.
 
-**An alarm threshold read off the data, not off the normal distribution.** The
-first version used `z <= -4` and flagged 3.4% of all station-days, where normal
-theory predicts 0.003%. Measuring instead of guessing showed why: the robust
+**An alarm threshold read off the data, not off the normal distribution.** The robust
 z-score has a standard deviation near 1.8 and very heavy tails. It also ruled
 out the obvious suspect — the training and serving distributions almost coincide
-(2.77% vs 3.42% below -4), so there was no drift; the threshold was simply
-wrong. The detector now takes a **target false alarm rate** and reads the
-matching quantile off its own training scores. The calibrated cut-off is 7.46,
-not 4. This makes alert volume an explicit product decision rather than a
-consequence of an assumption the data does not honour. Normalising the residuals
-with a log or Box-Cox transform would have hidden the same problem behind a
-transformation that is harder to explain to an operator.
+(2.77% vs 3.42% below -4), so there was no drift
 
 **Precomputed artifacts instead of a model in the request path.** The source
 publishes once a month. Spending CPU per request to recompute an answer that
 cannot change until the next release is not engineering. The payoff is concrete:
 the image needs no network, no credentials and no training run to build, and
 what ships is byte-for-byte the model the quality gate measured.
-
-## What it got wrong first
-
-Every one of these was found by a *different* kind of check, and none of them
-would have been found by the one before it. That is the argument for having all
-of them.
-
-| Defect | What caught it |
-|---|---|
-| The seasonal decomposition divided sixteen years of history by a single present-day level | The backtest — the model came out 2.94× *worse* than the baseline |
-| The seasonal-naive lookback was bounded in weeks where days were meant | A test written for "do not resurrect stale observations" |
-| The network-outage rule fired on any panel small enough that one station *is* the network | A test fixture with a single series |
-| Metrobús was documented as a drop-in second operator | Running it. Its open data is aggregated to the line and has no station column at all |
-| `not_yet_open` was assigned to any leading zero run, however short | An invariant audit of the built panel. Latent: 1 January is a holiday |
-| A console script pointed at a module that does not exist | Invoking it; `pip install` does not validate entry points |
-| `PROJECT_ROOT` resolved inside site-packages once installed rather than run from a checkout | Reading the Dockerfile. The service starts fine and then answers 503 to everything |
-| `index.html` was never packaged into the wheel | Building the image and requesting `/`. The tests run from the source tree, where the file is simply on disk |
-| The CUSUM never restarted, so one closure alarmed for weeks after it ended | Looking at the rendered dashboard |
-| The basemap tiles had started requiring an API key | Looking at the rendered dashboard |
-
-The last two are the point. With 197 tests green and all seven routes returning
-200, the product was still wrong: six of seven "current alerts" were stations
-whose incident had ended, one of them with a score of **+1.2** — ridership
-*above* expectation. No amount of unit testing surfaces that. Rendering the page
-does.
-
-Each fix went in at the level where the failure lives. The packaging bug is now
-caught by a CI job that builds the image and requests every route, not just
-`/health`, because that is the only check that could have caught it.
 
 ## Serving
 
