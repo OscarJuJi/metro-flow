@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metro Pulse</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+  :root {
+    --bg: #0e1116; --panel: #161b22; --line: #262c36;
+    --ink: #e6edf3; --muted: #8b949e;
+    --ok: #3fb950; --warn: #d29922; --bad: #f85149; --accent: #58a6ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  header {
+    padding: 14px 20px; border-bottom: 1px solid var(--line);
+    display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap;
+  }
+  header h1 { margin: 0; font-size: 17px; letter-spacing: .2px; }
+  header .meta { color: var(--muted); font-size: 12.5px; }
+  header .meta b { color: var(--ink); font-weight: 600; }
+  main { display: grid; grid-template-columns: 1.15fr 1fr; gap: 16px; padding: 16px; }
+  @media (max-width: 950px) { main { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px; overflow: hidden;
+  }
+  .card h2 {
+    margin: 0; padding: 11px 14px; font-size: 12px; text-transform: uppercase;
+    letter-spacing: .8px; color: var(--muted); border-bottom: 1px solid var(--line);
+  }
+  #map { height: 460px; background: #0b0e13; }
+  /* OpenStreetMap serves no dark basemap and needs no API key, which the
+     hosted dark tiles now do. Inverting the tile pane gets a dark map out of
+     light tiles; the markers live in the overlay pane and keep their colours. */
+  .leaflet-tile-pane {
+    filter: invert(1) hue-rotate(180deg) brightness(.85) contrast(.8) saturate(.45);
+  }
+  .body { padding: 14px; }
+  canvas { width: 100% !important; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 14px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 500; font-size: 11.5px; text-transform: uppercase; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tbody tr { cursor: pointer; }
+  tbody tr:hover { background: #1c222b; }
+  .scroll { max-height: 300px; overflow-y: auto; }
+  .pill {
+    display: inline-block; padding: 1px 7px; border-radius: 999px;
+    font-size: 11px; font-weight: 600;
+  }
+  .pill.bad { background: rgba(248,81,73,.15); color: var(--bad); }
+  .empty { padding: 22px 14px; color: var(--muted); }
+  .legend { padding: 10px 14px; color: var(--muted); font-size: 12px; }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Metro Pulse</h1>
+  <div class="meta" id="meta">loading…</div>
+</header>
+
+<main>
+  <section class="card">
+    <h2>Network — latest scored day</h2>
+    <div id="map"></div>
+    <div class="legend">
+      <span class="dot" style="background:var(--ok)"></span>normal
+      <span class="dot" style="background:var(--bad); margin-left:14px"></span>flagged by the detector
+      <span style="margin-left:14px">click a station to inspect it</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 id="chart-title">Select a station</h2>
+    <div class="body"><canvas id="chart" height="230"></canvas></div>
+  </section>
+
+  <section class="card" style="grid-column: 1 / -1">
+    <h2 id="alerts-title">Currently flagged</h2>
+    <div class="scroll"><table>
+      <thead><tr>
+        <th>Date</th><th>Line</th><th>Station</th>
+        <th class="num">Observed</th><th class="num">Expected</th><th class="num">Score</th><th>Why</th>
+      </tr></thead>
+      <tbody id="alerts"><tr><td colspan="7" class="empty">loading…</td></tr></tbody>
+    </table></div>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const LINE_COLORS = {
+  "1": "#e5457f", "2": "#0b58a2", "3": "#af9800", "4": "#68b2b2", "5": "#f0c419",
+  "6": "#d92b2b", "7": "#e08d21", "8": "#128b3f", "9": "#4a2a26", "12": "#b6a06a",
+  "A": "#7a2b8f", "B": "#8a8a8a"
+};
+const fmt = n => n == null ? "—" : Math.round(n).toLocaleString("en-US");
+const get = async path => { const r = await fetch(path); if (!r.ok) throw new Error(path); return r.json(); };
+
+let chart = null;
+let flaggedIds = new Set();
+
+async function init() {
+  const meta = await get("/metadata");
+  const [stations, alerts, today] = await Promise.all([
+    get("/stations"),
+    get("/anomalies?flagged_only=true"),
+    get(`/anomalies?date=${meta.data_through}&flagged_only=true`)
+  ]);
+
+  document.getElementById("meta").innerHTML =
+    `data through <b>${meta.data_through}</b> · forecasting <b>${meta.forecast_from}</b> to ` +
+    `<b>${meta.forecast_to}</b> · <b>${meta.n_series}</b> stations · ` +
+    `alarm rate <b>${meta.false_alarm_rate}</b> · trained ${meta.trained_at.slice(0, 10)}`;
+
+  flaggedIds = new Set(today.map(a => a.series_id));
+  document.querySelector("#alerts-title").textContent =
+    today.length
+      ? `Flagged on ${meta.data_through}`
+      : `Nothing flagged on ${meta.data_through} — showing the last ${meta.anomaly_window_days} days`;
+  renderAlerts(alerts);
+  renderMap(stations);
+  if (alerts.length) selectStation(alerts[0].series_id, alerts[0].station_name);
+}
+
+function renderMap(stations) {
+  const located = stations.filter(s => s.latitude != null);
+  const map = L.map("map", { zoomControl: true }).setView([19.42, -99.13], 11);
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors", maxZoom: 18
+  }).addTo(map);
+
+  for (const s of located) {
+    const flagged = flaggedIds.has(s.series_id);
+    L.circleMarker([s.latitude, s.longitude], {
+      radius: flagged ? 7 : 4.5,
+      color: flagged ? "#f85149" : (LINE_COLORS[s.line_id] || "#8b949e"),
+      weight: flagged ? 2.5 : 1.5,
+      fillColor: flagged ? "#f85149" : "#3fb950",
+      fillOpacity: flagged ? 0.9 : 0.55
+    })
+      .bindTooltip(`<b>${s.station_name}</b><br>Line ${s.line_id}`)
+      .on("click", () => selectStation(s.series_id, s.station_name))
+      .addTo(map);
+  }
+  if (located.length) {
+    map.fitBounds(L.latLngBounds(located.map(s => [s.latitude, s.longitude])).pad(0.06));
+  }
+}
+
+function renderAlerts(alerts) {
+  const body = document.getElementById("alerts");
+  if (!alerts.length) {
+    body.innerHTML = '<tr><td colspan="7" class="empty">Nothing flagged anywhere in the scored window.</td></tr>';
+    return;
+  }
+  body.innerHTML = alerts.map(a => `
+    <tr data-series="${a.series_id}" data-name="${a.station_name}">
+      <td>${a.date}</td><td>${a.line_id}</td><td>${a.station_name}</td>
+      <td class="num">${fmt(a.ridership)}</td>
+      <td class="num">${fmt(a.expected)}</td>
+      <td class="num">${a.score == null ? "—" : a.score.toFixed(1)}</td>
+      <td><span class="pill bad">${a.reason || "flagged"}</span></td>
+    </tr>`).join("");
+  body.querySelectorAll("tr[data-series]").forEach(row =>
+    row.addEventListener("click", () => selectStation(row.dataset.series, row.dataset.name)));
+}
+
+async function selectStation(seriesId, name) {
+  const stationId = seriesId.split(":")[1];
+  document.getElementById("chart-title").textContent =
+    `${name} — line ${seriesId.split(":")[0]}`;
+
+  const [history, forecast] = await Promise.all([
+    get(`/anomalies?station=${stationId}&flagged_only=false`),
+    get(`/forecast?station=${stationId}`)
+  ]);
+  const rows = history.filter(r => r.series_id === seriesId).sort((a, b) => a.date.localeCompare(b.date));
+  const ahead = forecast.filter(r => r.series_id === seriesId).sort((a, b) => a.date.localeCompare(b.date));
+
+  const labels = [...rows.map(r => r.date), ...ahead.map(r => r.date)];
+  const pad = new Array(rows.length).fill(null);
+  const datasets = [
+    { label: "observed", data: [...rows.map(r => r.ridership), ...ahead.map(() => null)],
+      borderColor: "#58a6ff", backgroundColor: "#58a6ff", pointRadius: 0, borderWidth: 1.8, tension: .2 },
+    { label: "expected", data: [...rows.map(r => r.expected), ...ahead.map(() => null)],
+      borderColor: "#8b949e", pointRadius: 0, borderWidth: 1.2, borderDash: [4, 4], tension: .2 },
+    { label: "forecast", data: [...pad, ...ahead.map(r => r.prediction)],
+      borderColor: "#d29922", backgroundColor: "#d29922", pointRadius: 2, borderWidth: 2, tension: .2 },
+    { label: "flagged", data: [...rows.map(r => r.is_anomaly ? r.ridership : null), ...ahead.map(() => null)],
+      borderColor: "transparent", backgroundColor: "#f85149", pointRadius: 4, showLine: false }
+  ];
+
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById("chart"), {
+    type: "line",
+    data: { labels, datasets },
+    options: {
+      responsive: true, interaction: { mode: "index", intersect: false },
+      plugins: { legend: { labels: { color: "#8b949e", boxWidth: 12, font: { size: 11 } } } },
+      scales: {
+        x: { ticks: { color: "#8b949e", maxTicksLimit: 8, font: { size: 10 } }, grid: { color: "#262c36" } },
+        y: { ticks: { color: "#8b949e", font: { size: 10 } }, grid: { color: "#262c36" }, beginAtZero: true }
+      }
+    }
+  });
+}
+
+init().catch(err => {
+  document.getElementById("meta").textContent =
+    "Could not load the artifacts — has `python -m metro_pulse.models.train` been run?";
+  console.error(err);
+});
+</script>
+</body>
+</html>

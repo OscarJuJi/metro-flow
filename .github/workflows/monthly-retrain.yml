@@ -1,0 +1,89 @@
+name: Monthly retrain
+
+# The portal republishes the ridership panel late in the month -- the run this
+# repository was built against landed on the 28th. Waking on the 5th leaves a
+# week of slack, and a manual trigger is there for when it slips further.
+on:
+  schedule:
+    - cron: "0 6 5 * *"
+  workflow_dispatch:
+    inputs:
+      gate:
+        description: "Maximum mean relative_mae the model may have and still ship"
+        default: "0.95"
+
+permissions:
+  contents: write
+
+jobs:
+  retrain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PYTHONUTF8: "1"
+      GATE: ${{ github.event.inputs.gate || '0.95' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install
+        run: pip install -e ".[dev,api]"
+
+      # Every step below re-resolves its source through the CKAN API. If the
+      # portal changed the schema, renamed a resource, added a station or
+      # published a station whose coordinates do not reconcile, the run stops
+      # here instead of shipping a model trained on something else.
+      - name: Ingest the ridership panel
+        run: python -m metro_pulse.ingest.download
+
+      - name: Build the panel
+        run: python -m metro_pulse.clean.build
+
+      - name: Reconcile station coordinates
+        run: python -m metro_pulse.ingest.geometry
+
+      - name: Record the service events
+        run: python -m metro_pulse.clean.events
+
+      # The gate: a model that no longer beats "the same weekday last week" does
+      # not get published, and nobody has to remember to check.
+      - name: Backtest and gate
+        run: python -m metro_pulse.backtest.run --folds 4 --gate "${GATE}"
+
+      - name: Train and write the serving artifacts
+        run: python -m metro_pulse.models.train
+
+      - name: Verify the service can load what was just written
+        run: pytest -q tests/test_api.py
+
+      - name: Commit the artifacts if they changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add artifacts/forecast.parquet artifacts/anomalies.parquet \
+                  artifacts/coordinates.parquet artifacts/metadata.json \
+                  reference/metro_stations.csv reference/metro_service_events.csv \
+                  reference/metro_station_coordinates.csv
+          if git diff --cached --quiet; then
+            echo "The portal published nothing new; artifacts are unchanged."
+            exit 0
+          fi
+          DATA_THROUGH=$(python -c "import json;print(json.load(open('artifacts/metadata.json'))['data_through'])")
+          git commit -m "Retrain on data through ${DATA_THROUGH}"
+          git push
+
+      - name: Upload the evaluation detail
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backtest
+          path: |
+            artifacts/metro_backtest_folds.csv
+            artifacts/metro_backtest_horizons.csv
+          if-no-files-found: warn

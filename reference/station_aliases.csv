@@ -1,0 +1,3 @@
+source,line_id,alias_station_id,canonical_station_id,note
+geometry,3,ninos-heroes-poder-judicial-cdmx,ninos-heroes,Station renamed to Ninos Heroes/Poder Judicial CDMX; the ridership panel still publishes the former name
+geometry,9,mixhiuca,mixiuhca,Transposed letters in the published geometry; the station is Mixiuhca

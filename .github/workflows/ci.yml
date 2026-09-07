@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install
+        run: pip install -e ".[dev,api]"
+
+      - name: Lint
+        run: ruff check src tests
+
+      # The tests that need the panel skip themselves when it is absent, so this
+      # runs against a clean checkout without downloading 60 MB from the portal.
+      # The API tests do run: their artifacts are committed.
+      - name: Test
+        run: pytest -q
+        env:
+          PYTHONUTF8: "1"
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the serving image
+        run: docker build -t metro-pulse:ci .
+
+      # Every route is checked, not just /health. The dashboard is a packaged
+      # data file rather than code, so it can go missing from the wheel while
+      # the tests -- which run from the source tree, where the file is simply on
+      # disk -- stay green. Only a request to a real container catches that.
+      - name: Start it and check every route answers
+        run: |
+          docker run -d --name metro-pulse -p 7860:7860 metro-pulse:ci
+          for attempt in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:7860/health >/dev/null && break
+            if [ "${attempt}" -eq 30 ]; then
+              echo "the container never became healthy" >&2
+              docker logs metro-pulse >&2
+              exit 1
+            fi
+            sleep 1
+          done
+          for route in /health /metadata /stations "/forecast?horizon=1" /anomalies / /docs; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:7860${route}")
+            echo "${code}  ${route}"
+            if [ "${code}" != "200" ]; then
+              echo "${route} answered ${code}" >&2
+              docker logs metro-pulse >&2
+              exit 1
+            fi
+          done
+
+      - name: Stop it
+        if: always()
+        run: docker rm -f metro-pulse || true

@@ -1,0 +1,31 @@
+{
+  "operator": "metro",
+  "trained_at": "2026-09-06T07:42:22+00:00",
+  "data_through": "2026-07-31",
+  "n_panel_rows": 1180920,
+  "n_series": 195,
+  "horizons": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "forecast_from": "2026-08-01",
+  "forecast_to": "2026-08-14",
+  "anomaly_window_days": 120,
+  "false_alarm_rate": 0.01,
+  "anomaly_threshold": 7.462,
+  "cusum_threshold": 59.602,
+  "anomalies_flagged": 306,
+  "has_coordinates": true
+}

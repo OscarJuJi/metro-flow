@@ -1,0 +1,196 @@
+line_id,station_id,station_name,first_date,last_date,n_days,n_raw_labels
+1,balbuena,Balbuena,2010-01-01,2026-07-31,6056,1
+1,balderas,Balderas,2010-01-01,2026-07-31,6056,1
+1,boulevard-puerto-aereo,Boulevard Puerto Aéreo,2010-01-01,2026-07-31,6056,1
+1,candelaria,Candelaria,2010-01-01,2026-07-31,6056,1
+1,chapultepec,Chapultepec,2010-01-01,2026-07-31,6056,1
+1,cuauhtemoc,Cuauhtémoc,2010-01-01,2026-07-31,6056,1
+1,gomez-farias,Gómez Farías,2010-01-01,2026-07-31,6056,2
+1,insurgentes,Insurgentes,2010-01-01,2026-07-31,6056,1
+1,isabel-la-catolica,Isabel la Católica,2010-01-01,2026-07-31,6056,1
+1,juanacatlan,Juanacatlán,2010-01-01,2026-07-31,6056,1
+1,merced,Merced,2010-01-01,2026-07-31,6056,1
+1,moctezuma,Moctezuma,2010-01-01,2026-07-31,6056,1
+1,observatorio,Observatorio,2010-01-01,2026-07-31,6056,1
+1,pantitlan,Pantitlán,2010-01-01,2026-07-31,6056,1
+1,pino-suarez,Pino Suárez,2010-01-01,2026-07-31,6056,1
+1,salto-del-agua,Salto del Agua,2010-01-01,2026-07-31,6056,1
+1,san-lazaro,San Lázaro,2010-01-01,2026-07-31,6056,1
+1,sevilla,Sevilla,2010-01-01,2026-07-31,6056,1
+1,tacubaya,Tacubaya,2010-01-01,2026-07-31,6056,1
+1,zaragoza,Zaragoza,2010-01-01,2026-07-31,6056,1
+2,allende,Allende,2010-01-01,2026-07-31,6056,1
+2,bellas-artes,Bellas Artes,2010-01-01,2026-07-31,6056,1
+2,chabacano,Chabacano,2010-01-01,2026-07-31,6056,1
+2,colegio-militar,Colegio Militar,2010-01-01,2026-07-31,6056,1
+2,cuatro-caminos,Cuatro Caminos,2010-01-01,2026-07-31,6056,1
+2,cuitlahuac,Cuitláhuac,2010-01-01,2026-07-31,6056,1
+2,ermita,Ermita,2010-01-01,2026-07-31,6056,1
+2,general-anaya,General Anaya,2010-01-01,2026-07-31,6056,1
+2,hidalgo,Hidalgo,2010-01-01,2026-07-31,6056,1
+2,nativitas,Nativitas,2010-01-01,2026-07-31,6056,1
+2,normal,Normal,2010-01-01,2026-07-31,6056,1
+2,panteones,Panteones,2010-01-01,2026-07-31,6056,1
+2,pino-suarez,Pino Suárez,2010-01-01,2026-07-31,6056,1
+2,popotla,Popotla,2010-01-01,2026-07-31,6056,1
+2,portales,Portales,2010-01-01,2026-07-31,6056,1
+2,revolucion,Revolución,2010-01-01,2026-07-31,6056,1
+2,san-antonio-abad,San Antonio Abad,2010-01-01,2026-07-31,6056,1
+2,san-cosme,San Cosme,2010-01-01,2026-07-31,6056,1
+2,tacuba,Tacuba,2010-01-01,2026-07-31,6056,1
+2,tasquena,Tasqueña,2010-01-01,2026-07-31,6056,1
+2,viaducto,Viaducto,2010-01-01,2026-07-31,6056,1
+2,villa-de-cortes,Villa de Cortés,2010-01-01,2026-07-31,6056,2
+2,xola,Xola,2010-01-01,2026-07-31,6056,1
+2,zocalo-tenochtitlan,Zócalo/Tenochtitlan,2010-01-01,2026-07-31,6056,1
+3,balderas,Balderas,2010-01-01,2026-07-31,6056,1
+3,centro-medico,Centro Médico,2010-01-01,2026-07-31,6056,1
+3,copilco,Copilco,2010-01-01,2026-07-31,6056,1
+3,coyoacan,Coyoacán,2010-01-01,2026-07-31,6056,1
+3,deportivo-18-de-marzo,Deportivo 18 de Marzo,2010-01-01,2026-07-31,6056,1
+3,division-del-norte,División del Norte,2010-01-01,2026-07-31,6056,1
+3,etiopia-plaza-de-la-transparencia,Etiopía/Plaza de la Transparencia,2010-01-01,2026-07-31,6056,1
+3,eugenia,Eugenia,2010-01-01,2026-07-31,6056,1
+3,guerrero,Guerrero,2010-01-01,2026-07-31,6056,1
+3,hidalgo,Hidalgo,2010-01-01,2026-07-31,6056,1
+3,hospital-general,Hospital General,2010-01-01,2026-07-31,6056,1
+3,indios-verdes,Indios Verdes,2010-01-01,2026-07-31,6056,1
+3,juarez,Juárez,2010-01-01,2026-07-31,6056,1
+3,la-raza,La Raza,2010-01-01,2026-07-31,6056,1
+3,miguel-angel-de-quevedo,Miguel Ángel de Quevedo,2010-01-01,2026-07-31,6056,2
+3,ninos-heroes,Niños Héroes,2010-01-01,2026-07-31,6056,1
+3,potrero,Potrero,2010-01-01,2026-07-31,6056,1
+3,tlatelolco,Tlatelolco,2010-01-01,2026-07-31,6056,1
+3,universidad,Universidad,2010-01-01,2026-07-31,6056,1
+3,viveros-derechos-humanos,Viveros/Derechos Humanos,2010-01-01,2026-07-31,6056,1
+3,zapata,Zapata,2010-01-01,2026-07-31,6056,1
+4,bondojito,Bondojito,2010-01-01,2026-07-31,6056,1
+4,canal-del-norte,Canal del Norte,2010-01-01,2026-07-31,6056,1
+4,candelaria,Candelaria,2010-01-01,2026-07-31,6056,1
+4,consulado,Consulado,2010-01-01,2026-07-31,6056,1
+4,fray-servando,Fray Servando,2010-01-01,2026-07-31,6056,1
+4,jamaica,Jamaica,2010-01-01,2026-07-31,6056,1
+4,martin-carrera,Martín Carrera,2010-01-01,2026-07-31,6056,1
+4,morelos,Morelos,2010-01-01,2026-07-31,6056,1
+4,santa-anita,Santa Anita,2010-01-01,2026-07-31,6056,1
+4,talisman,Talismán,2010-01-01,2026-07-31,6056,1
+5,aragon,Aragón,2010-01-01,2026-07-31,6056,1
+5,autobuses-del-norte,Autobuses del Norte,2010-01-01,2026-07-31,6056,1
+5,consulado,Consulado,2010-01-01,2026-07-31,6056,1
+5,eduardo-molina,Eduardo Molina,2010-01-01,2026-07-31,6056,1
+5,hangares,Hangares,2010-01-01,2026-07-31,6056,1
+5,instituto-del-petroleo,Instituto del Petróleo,2010-01-01,2026-07-31,6056,1
+5,la-raza,La Raza,2010-01-01,2026-07-31,6056,1
+5,misterios,Misterios,2010-01-01,2026-07-31,6056,1
+5,oceania,Oceanía,2010-01-01,2026-07-31,6056,1
+5,pantitlan,Pantitlán,2010-01-01,2026-07-31,6056,1
+5,politecnico,Politécnico,2010-01-01,2026-07-31,6056,1
+5,terminal-aerea,Terminal Aérea,2010-01-01,2026-07-31,6056,1
+5,valle-gomez,Valle Gómez,2010-01-01,2026-07-31,6056,1
+6,deportivo-18-de-marzo,Deportivo 18 de Marzo,2010-01-01,2026-07-31,6056,1
+6,el-rosario,El Rosario,2010-01-01,2026-07-31,6056,1
+6,ferreria-arena-ciudad-de-mexico,Ferrería/Arena Ciudad de México,2010-01-01,2026-07-31,6056,1
+6,instituto-del-petroleo,Instituto del Petróleo,2010-01-01,2026-07-31,6056,1
+6,la-villa-basilica,La Villa/Basílica,2010-01-01,2026-07-31,6056,1
+6,lindavista,Lindavista,2010-01-01,2026-07-31,6056,1
+6,martin-carrera,Martín Carrera,2010-01-01,2026-07-31,6056,1
+6,norte-45,Norte 45,2010-01-01,2026-07-31,6056,1
+6,tezozomoc,Tezozómoc,2010-01-01,2026-07-31,6056,1
+6,uam-azcapotzalco,UAM-Azcapotzalco,2010-01-01,2026-07-31,6056,1
+6,vallejo,Vallejo,2010-01-01,2026-07-31,6056,1
+7,aquiles-serdan,Aquiles Serdán,2010-01-01,2026-07-31,6056,1
+7,auditorio,Auditorio,2010-01-01,2026-07-31,6056,1
+7,barranca-del-muerto,Barranca del Muerto,2010-01-01,2026-07-31,6056,1
+7,camarones,Camarones,2010-01-01,2026-07-31,6056,1
+7,constituyentes,Constituyentes,2010-01-01,2026-07-31,6056,1
+7,el-rosario,El Rosario,2010-01-01,2026-07-31,6056,1
+7,mixcoac,Mixcoac,2010-01-01,2026-07-31,6056,1
+7,polanco,Polanco,2010-01-01,2026-07-31,6056,1
+7,refineria,Refinería,2010-01-01,2026-07-31,6056,1
+7,san-antonio,San Antonio,2010-01-01,2026-07-31,6056,1
+7,san-joaquin,San Joaquín,2010-01-01,2026-07-31,6056,1
+7,san-pedro-de-los-pinos,San Pedro de los Pinos,2010-01-01,2026-07-31,6056,1
+7,tacuba,Tacuba,2010-01-01,2026-07-31,6056,1
+7,tacubaya,Tacubaya,2010-01-01,2026-07-31,6056,1
+8,aculco,Aculco,2010-01-01,2026-07-31,6056,1
+8,apatlaco,Apatlaco,2010-01-01,2026-07-31,6056,1
+8,atlalilco,Atlalilco,2010-01-01,2026-07-31,6056,1
+8,bellas-artes,Bellas Artes,2010-01-01,2026-07-31,6056,1
+8,cerro-de-la-estrella,Cerro de la Estrella,2010-01-01,2026-07-31,6056,1
+8,chabacano,Chabacano,2010-01-01,2026-07-31,6056,1
+8,constitucion-de-1917,Constitución de 1917,2010-01-01,2026-07-31,6056,1
+8,coyuya,Coyuya,2010-01-01,2026-07-31,6056,1
+8,doctores,Doctores,2010-01-01,2026-07-31,6056,1
+8,escuadron-201,Escuadrón 201,2010-01-01,2026-07-31,6056,1
+8,garibaldi-lagunilla,Garibaldi/Lagunilla,2010-01-01,2026-07-31,6056,1
+8,iztacalco,Iztacalco,2010-01-01,2026-07-31,6056,1
+8,iztapalapa,Iztapalapa,2010-01-01,2026-07-31,6056,1
+8,la-viga,La Viga,2010-01-01,2026-07-31,6056,1
+8,obrera,Obrera,2010-01-01,2026-07-31,6056,1
+8,salto-del-agua,Salto del Agua,2010-01-01,2026-07-31,6056,1
+8,san-juan-de-letran,San Juan de Letrán,2010-01-01,2026-07-31,6056,1
+8,santa-anita,Santa Anita,2010-01-01,2026-07-31,6056,1
+8,uam-i,UAM-I,2010-01-01,2026-07-31,6056,1
+9,centro-medico,Centro Médico,2010-01-01,2026-07-31,6056,1
+9,chabacano,Chabacano,2010-01-01,2026-07-31,6056,1
+9,chilpancingo,Chilpancingo,2010-01-01,2026-07-31,6056,1
+9,ciudad-deportiva,Ciudad Deportiva,2010-01-01,2026-07-31,6056,1
+9,jamaica,Jamaica,2010-01-01,2026-07-31,6056,1
+9,lazaro-cardenas,Lázaro Cárdenas,2010-01-01,2026-07-31,6056,1
+9,mixiuhca,Mixiuhca,2010-01-01,2026-07-31,6056,1
+9,pantitlan,Pantitlán,2010-01-01,2026-07-31,6056,1
+9,patriotismo,Patriotismo,2010-01-01,2026-07-31,6056,1
+9,puebla,Puebla,2010-01-01,2026-07-31,6056,1
+9,tacubaya,Tacubaya,2010-01-01,2026-07-31,6056,1
+9,velodromo,Velódromo,2010-01-01,2026-07-31,6056,1
+12,atlalilco,Atlalilco,2010-01-01,2026-07-31,6056,1
+12,calle-11,Calle 11,2010-01-01,2026-07-31,6056,1
+12,culhuacan,Culhuacán,2010-01-01,2026-07-31,6056,1
+12,eje-central,Eje Central,2010-01-01,2026-07-31,6056,1
+12,ermita,Ermita,2010-01-01,2026-07-31,6056,1
+12,hospital-20-de-noviembre,Hospital 20 de Noviembre,2010-01-01,2026-07-31,6056,1
+12,insurgentes-sur,Insurgentes Sur,2010-01-01,2026-07-31,6056,1
+12,lomas-estrella,Lomas Estrella,2010-01-01,2026-07-31,6056,1
+12,mexicaltzingo,Mexicaltzingo,2010-01-01,2026-07-31,6056,1
+12,mixcoac,Mixcoac,2010-01-01,2026-07-31,6056,1
+12,nopalera,Nopalera,2010-01-01,2026-07-31,6056,1
+12,olivos,Olivos,2010-01-01,2026-07-31,6056,1
+12,parque-de-los-venados,Parque de los Venados,2010-01-01,2026-07-31,6056,1
+12,periferico-oriente,Periférico Oriente,2010-01-01,2026-07-31,6056,1
+12,san-andres-tomatlan,San Andrés Tomatlán,2010-01-01,2026-07-31,6056,1
+12,tezonco,Tezonco,2010-01-01,2026-07-31,6056,1
+12,tlahuac,Tláhuac,2010-01-01,2026-07-31,6056,1
+12,tlaltenco,Tlaltenco,2010-01-01,2026-07-31,6056,1
+12,zapata,Zapata,2010-01-01,2026-07-31,6056,1
+12,zapotitlan,Zapotitlán,2010-01-01,2026-07-31,6056,1
+A,acatitla,Acatitla,2010-01-01,2026-07-31,6056,1
+A,agricola-oriental,Agrícola Oriental,2010-01-01,2026-07-31,6056,1
+A,canal-de-san-juan,Canal de San Juan,2010-01-01,2026-07-31,6056,1
+A,guelatao,Guelatao,2010-01-01,2026-07-31,6056,1
+A,la-paz,La Paz,2010-01-01,2026-07-31,6056,1
+A,los-reyes,Los Reyes,2010-01-01,2026-07-31,6056,1
+A,pantitlan,Pantitlán,2010-01-01,2026-07-31,6056,1
+A,penon-viejo,Peñón Viejo,2010-01-01,2026-07-31,6056,2
+A,santa-marta,Santa Marta,2010-01-01,2026-07-31,6056,1
+A,tepalcates,Tepalcates,2010-01-01,2026-07-31,6056,1
+B,bosque-de-aragon,Bosque de Aragón,2010-01-01,2026-07-31,6056,1
+B,buenavista,Buenavista,2010-01-01,2026-07-31,6056,1
+B,ciudad-azteca,Ciudad Azteca,2010-01-01,2026-07-31,6056,1
+B,deportivo-oceania,Deportivo Oceanía,2010-01-01,2026-07-31,6025,1
+B,ecatepec,Ecatepec,2010-01-01,2026-07-31,6056,1
+B,garibaldi-lagunilla,Garibaldi/Lagunilla,2010-01-01,2026-07-31,6056,1
+B,guerrero,Guerrero,2010-01-01,2026-07-31,6056,1
+B,impulsora,Impulsora,2010-01-01,2026-07-31,6056,1
+B,lagunilla,Lagunilla,2010-01-01,2026-07-31,6056,1
+B,morelos,Morelos,2010-01-01,2026-07-31,6056,1
+B,muzquiz,Múzquiz,2010-01-01,2026-07-31,6056,1
+B,nezahualcoyotl,Nezahualcóyotl,2010-01-01,2026-07-31,6056,1
+B,oceania,Oceanía,2010-01-01,2026-07-31,6056,1
+B,olimpica,Olímpica,2010-01-01,2026-07-31,6056,2
+B,plaza-aragon,Plaza Aragón,2010-01-01,2026-07-31,6056,1
+B,ricardo-flores-magon,Ricardo Flores Magón,2010-01-01,2026-07-31,6056,1
+B,rio-de-los-remedios,Río de los Remedios,2010-01-01,2026-07-31,6056,1
+B,romero-rubio,Romero Rubio,2010-01-01,2026-07-31,6056,1
+B,san-lazaro,San Lázaro,2010-01-01,2026-07-31,6056,1
+B,tepito,Tepito,2010-01-01,2026-07-31,6056,1
+B,villa-de-aragon,Villa de Aragón,2010-01-01,2026-07-31,6056,1

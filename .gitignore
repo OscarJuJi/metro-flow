@@ -1,0 +1,36 @@
+# Environments
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# The panel is regenerated from the portal, never committed.
+data/
+
+# Most artifacts are regenerated too, but the four the service reads are
+# committed on purpose: the monthly retrain job produces them in CI and the
+# Docker image just copies them, so building the image needs no network, no
+# training run and no secrets.
+artifacts/*
+!artifacts/forecast.parquet
+!artifacts/anomalies.parquet
+!artifacts/coordinates.parquet
+!artifacts/metadata.json
+
+# Notebook noise
+.ipynb_checkpoints/
+
+# Tooling
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
