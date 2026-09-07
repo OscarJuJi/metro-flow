@@ -1,4 +1,4 @@
-# Metro Pulse
+# Metro flow
 
 Demand forecasting and operational anomaly detection for the Mexico City Metro,
 built on the city's open ridership data: 
