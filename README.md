@@ -58,24 +58,6 @@ being stations whose incident had ended. Restarting cut the alert volume by a
 third and raised precision from 0.34 to 0.45 while costing two points of recall:
 what it removed was the same incident reported over and over.
 
-*Onset* recall is the honest metric: flagging day four hundred of a two-year
-closure is worth nothing to anybody, and it does not count here. Precision is a
-lower bound — a "false positive" may well be a real incident (a march, a flood,
-a partial failure) that never became a recorded closure.
-
-## What the data turned out to be
-
-Most of the engineering in this project is in the four paragraphs below. The
-modelling was the easy part.
-
-**The line column holds 24 values for 12 lines.** The 2021–2023 slice of the
-panel is mojibake: its UTF-8 bytes were decoded as latin-1 and re-encoded, so
-the file literally stores `LÃ­nea 1` where it means `Línea 1`. Stripping accents
-does not merge the two spellings — the text has to be repaired
-(`encode("latin-1").decode("utf-8")`) before it is normalized. Without that step
-every series silently splits in two across the most eventful years in the
-record.
-
 **5.3% of rows report zero ridership, and none of them are demand.** They are
 the operating history of the network, written into the measurement column:
 
@@ -144,26 +126,6 @@ for staffing and scheduling, not for a passenger deciding which train to catch.
 *There is no hourly data.* Public ridership is daily, which puts "which hour is
 least crowded" out of reach. It is not attempted.
 
-## Design decisions
-
-**Repairing the mojibake rather than mapping it.** The fix is
-`text.encode("latin-1").decode("utf-8")` wrapped in a `try`, and it is chosen
-because it is self-verifying: text that is already correct has no latin-1
-encoding of its UTF-8 bytes, fails the round trip and comes back untouched. So
-it can be applied to every value without knowing in advance which ones are
-broken. A hand-written substitution table would work today and break the next
-time the portal publishes a new station with the same defect.
-
-**Deriving the service mask from the data rather than from a list of events.**
-A hand-maintained event log would need editing for every future closure, and —
-more importantly — evaluating the detector against the same list that produced
-the mask would be circular. Because the mask is derived, the documented events
-become an *independent* ground truth for measuring recall. The four-day
-threshold that separates a closure from an incident is not a guess either: the
-run-length distribution has a gap there, with 182 runs of exactly one day, 97 of
-two or three, and only 14 of four to six.
-
-
 **A strong baseline, on purpose.** Metro demand is dominated by the day of the
 week, so "the same weekday last week" is a genuinely good forecast. Picking a
 weak baseline is the most common way a forecasting project flatters itself.
@@ -171,15 +133,6 @@ Two skill numbers are reported because they answer different questions: `mase`
 is the textbook figure, comparable with the literature, while `relative_mae` is
 measured against the baseline *on the same days* and therefore equals exactly
 1.0 for the baseline — a verifiable invariant rather than a claim.
-
-**One global model, not 195 local ones.** Per-station models would be 195 models
-of ~6,000 rows each, none able to learn that Sundays are quiet from anything but
-its own history. The global model takes the station identity as a feature, so a
-station reopening after a two-year closure inherits what the network knows about
-Sundays and holidays. The objective is `l1` because the score is mean absolute
-error: training on squared loss and reporting absolute error optimises one thing
-and reports another, and in data this full of outliers the squared loss chases
-them.
 
 **An alarm threshold read off the data, not off the normal distribution.** The robust
 z-score has a standard deviation near 1.8 and very heavy tails. It also ruled
