@@ -11,6 +11,8 @@ Two things come out of one model of expected demand:
 
 ## Results
 
+(results.png)
+
 Everything below is measured out-of-sample. Nothing is fitted on a day it is
 scored on, and there is a [test suite](tests/test_no_leakage.py) that proves it
 by replacing the future with noise and requiring the forecasts not to move.
