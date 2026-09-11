@@ -11,7 +11,7 @@ Two things come out of one model of expected demand:
 
 ## Results
 
-<img src="docs/Results.png" width="600" alt="texto">
+<img src="Results.png" width="600" alt="texto">
 
 Everything below is measured out-of-sample. Nothing is fitted on a day it is
 scored on, and there is a [test suite](tests/test_no_leakage.py) that proves it
